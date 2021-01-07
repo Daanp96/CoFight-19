@@ -1,34 +1,37 @@
 import sys 
 import pygame
+import pygame_menu
 
 pygame.init()
 pygame.mixer.init()
 
-aphex = 'bleh.mp3'
+def set_difficulty():
+    # Do the job here !
+    pass
 
-size = width, height = 320, 240
-speed = [2, 2]
-black = 0, 0, 0
+def start_the_game():
+    # Do the job here !
+    pass
 
-screen = pygame.display.set_mode(size)
+# aphex = 'bleh.mp3'
+#
+# size = width, height = 320, 240
+# speed = [2, 2]
+# black = 128, 0, 128
+#
+# screen = pygame.display.set_mode(size)
+#
+# pygame.mixer.music.load(aphex)
+# pygame.mixer.music.play()
 
-ball = pygame.image.load("intro_ball.gif")
-ballrect = ball.get_rect()
+surface = pygame.display.set_mode((600, 400))
 
-pygame.mixer.music.load(aphex)
-pygame.mixer.music.play()
+menu = pygame_menu.Menu(240, 320, 'Welcome',
+                       theme=pygame_menu.themes.THEME_BLUE)
 
-while 1:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+menu.add_text_input('Name :', default='John Doe')
+menu.add_selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+menu.add_button('Play', start_the_game)
+menu.add_button('Quit', pygame_menu.events.EXIT)
 
-    ballrect = ballrect.move(speed)
-    if ballrect.left < 0 or ballrect.right > width:
-        speed[0] = -speed[0]
-    if ballrect.top < 0 or ballrect.bottom > height:
-        speed[1] = -speed[1]
-
-    screen.fill(black)
-    screen.blit(ball, ballrect)
-
-    pygame.display.flip()
+menu.mainloop(surface)
