@@ -1,5 +1,6 @@
 import pygame
 import pygame_menu
+import detect_
 
 pygame.init()
 pygame.mixer.init()
@@ -11,9 +12,9 @@ def start_the_game():
     print("LETS GET IT")
     pass
 
-aphex = 'bleh.mp3'
+music = 'music/bleh.mp3'
 
-pygame.mixer.music.load(aphex)
+pygame.mixer.music.load(music)
 pygame.mixer.music.play()
 
 surface = pygame.display.set_mode((600, 400))
