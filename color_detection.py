@@ -43,7 +43,7 @@ cv2.resizeWindow("color_selected", 50, 50);
 # image window for sample image
 cv2.namedWindow('image')
 
-# sample image path
+# sample image path -> veranderen naar ROI van input
 img_path = "sample_img.png"
 
 # read sample image
