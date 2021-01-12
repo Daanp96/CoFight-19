@@ -1,5 +1,6 @@
 import pygame
 import pygame_menu
+import face_mask_detector.detect_mask_video as face
 
 pygame.init()
 pygame.mixer.init()
