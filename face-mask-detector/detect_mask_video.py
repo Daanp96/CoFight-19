@@ -136,6 +136,9 @@ while True:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
         cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
 
+        point = (int(((startX + endX) / 2)), int(((startY + endY + 30) / 2)))
+        cv2.circle(frame, tuple(point), 1, (0, 0, 255))
+
     # show the output frame
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
