@@ -1,21 +1,21 @@
 import pygame
 import pygame_menu
-import face_mask_detector.detect_mask_video as face
+import os
 
 pygame.init()
 pygame.mixer.init()
 
 pygame.display.set_caption('CoFight-19')
 
-def start_the_game():
-    # Do the job here !
-    print("LETS GET IT")
-    pass
-
 music = 'music/bleh.mp3'
 
 pygame.mixer.music.load(music)
 pygame.mixer.music.play()
+
+def start_the_game():
+    os.system("game.py");
+    print("LETS GET IT")
+    pass
 
 surface = pygame.display.set_mode((600, 400))
 
