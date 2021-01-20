@@ -63,6 +63,8 @@ def detect_and_predict_mask(frame, faceNet, maskNet):
             faces.append(face)
             locs.append((startX, startY, endX, endY))
 
+
+
     # only make a predictions if at least one face was detected
     if len(faces) > 0:
         # for faster inference we'll make batch predictions on *all*
@@ -136,14 +138,34 @@ while True:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
         cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
 
+        # determine center of face (for mask color)
+        point = (int(((startX + endX) / 2)), int(((startY + endY + 30) / 2)))
+        cv2.circle(frame, tuple(point), 1, (0, 0, 255))
+
+        # save image when wearing a mask
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
+            if mask > withoutMask:
+                faceROI = frame[startY+2:endY-2, startX+2:endX-2]
+
+                height, width, depth = faceROI.shape
+                print(depth)
+                ratio = width / height
+                new_width = 70
+                new_height = int(new_width * ratio)
+                new_format = (new_height, new_width)
+
+                faceROI = cv2.cvtColor(faceROI, cv2.COLOR_RGB2RGBA)
+                faceROI = cv2.resize(faceROI, new_format)
+
+                cv2.imwrite('roi.png', faceROI)
+                # vs.stop()
+                # cv2.destroyAllWindows()
+
+            else:
+                print('fuck u')
+
     # show the output frame
     cv2.imshow("Frame", frame)
-    key = cv2.waitKey(1) & 0xFF
 
-    # if the `q` key was pressed, break from the loop
-    if key == ord("q"):
-        break
 
-# do a bit of cleanup
-cv2.destroyAllWindows()
-vs.stop()
