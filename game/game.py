@@ -73,6 +73,9 @@ class Spaceship(pygame.sprite.Sprite):
         self.image = pygame.image.load("img/knoempert.png")
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
+        self.heart = pygame.image.load("img/heart.png")
+        self.heart_rect = self.heart.get_rect()
+        self.heart_y = 30
         self.health_start = health
         self.health_remaining = health
         self.last_shot = pygame.time.get_ticks()
@@ -104,11 +107,15 @@ class Spaceship(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         # draw health bar
-        pygame.draw.rect(screen, red, (self.rect.x, (self.rect.bottom + 10), self.rect.width, 15))
+        # pygame.draw.rect(screen, red, (self.rect.x, (self.rect.bottom + 10), self.rect.width, 15))
         if self.health_remaining > 0:
-            pygame.draw.rect(screen, green, (
-            self.rect.x, (self.rect.bottom + 10), int(self.rect.width * (self.health_remaining / self.health_start)),
-            15))
+            screen.blit(self.heart, ((self.rect.x - 25), (self.rect.bottom + 10)))
+            screen.blit(self.heart, ((self.rect.x + 5), (self.rect.bottom + 10)))
+            screen.blit(self.heart, ((self.rect.x + 35), (self.rect.bottom + 10)))
+
+            # pygame.draw.rect(screen, green, (
+            # self.rect.x, (self.rect.bottom + 10), int(self.rect.width * (self.health_remaining / self.health_start)),
+            # 15))
         elif self.health_remaining <= 0:
             explosion = Explosion(self.rect.centerx, self.rect.centery, 3)
             explosion_group.add(explosion)
@@ -231,6 +238,7 @@ create_aliens()
 
 # create player
 spaceship = Spaceship(int(screen_width / 2), screen_height - 100, 3)
+# hearts = Hearts(int(screen_width / 2), (screen_height - 100) + 55, 3)
 spaceship_group.add(spaceship)
 
 run = True
