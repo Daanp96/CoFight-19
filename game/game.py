@@ -1,8 +1,9 @@
 import pygame
+from PIL import Image
 from pygame import mixer
-from pygame.locals import *
 import random
-import PIL
+import numpy as np
+import detect_mask_video as dmv
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
 mixer.init()
@@ -108,10 +109,17 @@ class Spaceship(pygame.sprite.Sprite):
 
         # draw health bar
         # pygame.draw.rect(screen, red, (self.rect.x, (self.rect.bottom + 10), self.rect.width, 15))
-        if self.health_remaining > 0:
+        if self.health_remaining == 3:
             screen.blit(self.heart, ((self.rect.x - 25), (self.rect.bottom + 10)))
             screen.blit(self.heart, ((self.rect.x + 5), (self.rect.bottom + 10)))
             screen.blit(self.heart, ((self.rect.x + 35), (self.rect.bottom + 10)))
+
+        elif self.health_remaining == 2:
+            screen.blit(self.heart, ((self.rect.x - 25), (self.rect.bottom + 10)))
+            screen.blit(self.heart, ((self.rect.x + 5), (self.rect.bottom + 10)))
+
+        elif self.health_remaining == 1:
+            screen.blit(self.heart, ((self.rect.x - 25), (self.rect.bottom + 10)))
 
             # pygame.draw.rect(screen, green, (
             # self.rect.x, (self.rect.bottom + 10), int(self.rect.width * (self.health_remaining / self.health_start)),
@@ -154,11 +162,22 @@ class Aliens(pygame.sprite.Sprite):
         self.move_direction = 1
 
     def update(self):
-        self.rect.x += self.move_direction
-        self.move_counter += 1
-        if abs(self.move_counter) > 75:
-            self.move_direction *= -1
-            self.move_counter *= self.move_direction
+        if wearingMask:
+            self.rect.x += self.move_direction
+            self.move_counter += 1
+
+            if abs(self.move_counter) > 75:
+                self.move_direction *= -1
+                self.move_counter *= self.move_direction
+
+        else:
+            self.rect.x += self.move_direction
+            self.rect.y += self.move_direction
+            self.move_counter += 10
+
+            if abs(self.move_counter) > 75:
+                self.move_direction *= -1
+                self.move_counter *= self.move_direction
 
 
 # create Alien Bullets class
@@ -170,7 +189,12 @@ class Alien_Bullets(pygame.sprite.Sprite):
         self.rect.center = [x, y]
 
     def update(self):
-        self.rect.y += 2
+
+        if wearingMask:
+            self.rect.y += 2
+        else:
+            self.rect.y += 20
+
         if self.rect.top > screen_height:
             self.kill()
         if pygame.sprite.spritecollide(self, spaceship_group, False, pygame.sprite.collide_mask):
@@ -241,8 +265,34 @@ spaceship = Spaceship(int(screen_width / 2), screen_height - 100, 3)
 # hearts = Hearts(int(screen_width / 2), (screen_height - 100) + 55, 3)
 spaceship_group.add(spaceship)
 
-run = True
-while run:
+result = dmv.startCam()
+wearingMask = result[0]
+heart_color = result[1]
+photoTaken = result[2]
+
+im = Image.open('img/heart.png')
+data = np.array(im)
+
+r1, g1, b1 = 255, 255, 255  # Original value
+r2, g2, b2 = heart_color
+
+red, green, blue = data[:, :, 0], data[:, :, 1], data[:, :, 2]
+mask = (red == r1) & (green == g1) & (blue == b1)
+data[:, :, :3][mask] = [r2, g2, b2]
+
+im = Image.fromarray(data)
+im.save('img/heart_fixed.png')
+
+spaceship.heart = pygame.image.load("img/heart_fixed.png")
+spaceship.image = pygame.image.load("roi.png")
+
+
+if not wearingMask:
+    alien_cooldown = -1  # bullet cooldown in milliseconds
+    cols = 6
+
+
+while photoTaken:
 
     clock.tick(fps)
 
@@ -273,10 +323,18 @@ while run:
             alien_group.update()
             alien_bullet_group.update()
         else:
-            if game_over == -1:
-                draw_text('GAME OVER!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
-            if game_over == 1:
-                draw_text('YOU WIN!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+            if wearingMask:
+                if game_over == -1:
+                    draw_text('GAME OVER!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+                if game_over == 1:
+                    draw_text('YOU WIN!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+            else:
+                if game_over == -1:
+                    draw_text('u have the rona', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+                if game_over == 1:
+                    draw_text('hoe de fuck', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+
+
 
     if countdown > 0:
         draw_text('GET READY!', font40, white, int(screen_width / 2 - 110), int(screen_height / 2 + 50))

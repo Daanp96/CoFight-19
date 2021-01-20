@@ -1,2 +1,0 @@
-import face_mask_detector.detect_mask_video
-import game.cofight
