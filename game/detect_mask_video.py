@@ -14,7 +14,6 @@ import cv2
 import os
 
 
-
 def startCam():
     def detect_and_predict_mask(frame, faceNet, maskNet):
         # grab the dimensions of the frame and then construct a blob
@@ -140,8 +139,8 @@ def startCam():
             cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
 
             # determine center of face (for mask color)
-            point = (int(((startX + endX) / 2)), int(((startY + endY + 30) / 2)))
-            cv2.circle(frame, tuple(point), 1, (0, 0, 255))
+            pointX, pointY = (int(((startX + endX) / 2)), int(((startY + endY + 30) / 2)))
+            #cv2.circle(frame, tuple(point), 1, (0, 0, 255))
 
             # save image when wearing a mask
             key = cv2.waitKey(1) & 0xFF
@@ -154,21 +153,29 @@ def startCam():
                 new_height = int(new_width * ratio)
                 new_format = (new_height, new_width)
 
+
                 faceROI = cv2.cvtColor(faceROI, cv2.COLOR_RGB2RGBA)
                 faceROI = cv2.resize(faceROI, new_format)
 
                 cv2.imwrite('roi.png', faceROI)
 
+                img = cv2.imread('roi.png')
+                #color = int(img[point])
+
                 if mask > withoutMask:
                     isWearingMask = True
-                    heart_color = (255, 181, 229) #vervang met masker kleur
+                    heart_color = (frame[pointY, pointX, 2], frame[pointY, pointX, 1],
+                                   frame[pointY, pointX, 0])  # vervang met masker kleur
+                    #heart_color = (16, 179, 70)
+                    print(heart_color)
                     photoTaken = True
                     cv2.destroyAllWindows()
 
                 else:
                     print('fuck u')
                     isWearingMask = False
-                    heart_color = (16, 179, 70) #hier een lekker corona kleurtje (:
+                    heart_color = (16, 179, 70)  # hier een lekker corona kleurtje (:
+                    print(heart_color)
                     photoTaken = True
                     cv2.destroyAllWindows()
 
