@@ -54,7 +54,7 @@ green = (0, 255, 0)
 white = (255, 255, 255)
 
 # load image
-bg = pygame.image.load("img/bg.png")
+bg = pygame.image.load("img/iu.png")
 
 
 def draw_bg():

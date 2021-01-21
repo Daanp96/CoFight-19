@@ -139,8 +139,7 @@ def startCam():
             cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
 
             # determine center of face (for mask color)
-            point = (int(((startX + endX) / 2)), int(((startY + endY + 30) / 2)))
-            cv2.circle(frame, tuple(point), 1, (0, 0, 255))
+            pointX, pointY = (int(((startX + endX) / 2)), int(((startY + endY + 30) / 2)))
 
             # save image when wearing a mask
             key = cv2.waitKey(1) & 0xFF
@@ -160,7 +159,7 @@ def startCam():
 
                 if mask > withoutMask:
                     isWearingMask = True
-                    heart_color = (255, 181, 229)  # vervang met masker kleur
+                    heart_color = (frame[pointY, pointX, 2], frame[pointY, pointX, 1], frame[pointY, pointX, 0])  # vervang met masker kleur
                     photoTaken = True
                     cv2.destroyAllWindows()
 
@@ -175,5 +174,3 @@ def startCam():
 
         # show the output frame
         cv2.imshow("Character Selection", frame)
-
-startCam()
