@@ -8,7 +8,7 @@ pygame.mixer.init()
 
 pygame.display.set_caption('CoFight-19')
 
-music = 'music/bleh.mp3'
+music = 'music/title.mp3'
 
 pygame.mixer.music.load(music)
 pygame.mixer.music.play()
@@ -37,7 +37,7 @@ ronaBackground = pygame_menu.baseimage.BaseImage(
 cofightTheme = Theme(
     title_shadow=False,
     title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_NONE,
-    title_offset = (200, 0),
+    title_offset = (200, 50),
     widget_font=font,
     title_font= font,
     background_color = ronaBackground
