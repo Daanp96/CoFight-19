@@ -14,7 +14,6 @@ import cv2
 import os
 
 
-
 def startCam():
     def detect_and_predict_mask(frame, faceNet, maskNet):
         # grab the dimensions of the frame and then construct a blob
@@ -145,7 +144,7 @@ def startCam():
 
             # save image when wearing a mask
             key = cv2.waitKey(1) & 0xFF
-            if key == ord("q"):
+            if key == 32:
                 faceROI = frame[startY + 2:endY - 2, startX + 2:endX - 2]
 
                 height, width, depth = faceROI.shape
@@ -161,18 +160,20 @@ def startCam():
 
                 if mask > withoutMask:
                     isWearingMask = True
-                    heart_color = (255, 181, 229) #vervang met masker kleur
+                    heart_color = (255, 181, 229)  # vervang met masker kleur
                     photoTaken = True
                     cv2.destroyAllWindows()
 
                 else:
                     print('fuck u')
                     isWearingMask = False
-                    heart_color = (16, 179, 70) #hier een lekker corona kleurtje (:
+                    heart_color = (16, 179, 70)  # hier een lekker corona kleurtje (:
                     photoTaken = True
                     cv2.destroyAllWindows()
 
                 return isWearingMask, heart_color, photoTaken
 
         # show the output frame
-        cv2.imshow("Frame", frame)
+        cv2.imshow("Character Selection", frame)
+
+startCam()
