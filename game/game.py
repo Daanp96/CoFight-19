@@ -54,7 +54,7 @@ green = (0, 255, 0)
 white = (255, 255, 255)
 
 # load image
-bg = pygame.image.load("img/iu.png")
+bg = pygame.image.load("img/background.png")
 
 
 def draw_bg():
@@ -71,7 +71,7 @@ def draw_text(text, font, text_col, x, y):
 class Spaceship(pygame.sprite.Sprite):
     def __init__(self, x, y, health):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("img/knoempert.png")
+        self.image = pygame.image.load("img/roi.png")
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
         self.heart = pygame.image.load("img/heart.png")
@@ -136,7 +136,7 @@ class Spaceship(pygame.sprite.Sprite):
 class Bullets(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("img/vaccine_bigBoi.png")
+        self.image = pygame.image.load("img/vaccine.png")
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
 
@@ -155,7 +155,7 @@ class Bullets(pygame.sprite.Sprite):
 class Aliens(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("img/wappie" + str(random.randint(1, 4)) + ".png")
+        self.image = pygame.image.load("img/wappie" + str(random.randint(1, 5)) + ".png")
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
         self.move_counter = 0
@@ -284,7 +284,7 @@ im = Image.fromarray(data)
 im.save('img/heart_fixed.png')
 
 spaceship.heart = pygame.image.load("img/heart_fixed.png")
-spaceship.image = pygame.image.load("roi.png")
+spaceship.image = pygame.image.load("img/roi.png")
 
 
 if not wearingMask:

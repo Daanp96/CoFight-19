@@ -155,7 +155,7 @@ def startCam():
                 faceROI = cv2.cvtColor(faceROI, cv2.COLOR_RGB2RGBA)
                 faceROI = cv2.resize(faceROI, new_format)
 
-                cv2.imwrite('roi.png', faceROI)
+                cv2.imwrite('img/roi.png', faceROI)
 
                 if mask > withoutMask:
                     isWearingMask = True
