@@ -12,7 +12,7 @@ pygame.init()
 music = 'music/game.mp3'
 
 pygame.mixer.music.load(music)
-pygame.mixer.music.set_volume(0.1)
+pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play()
 
 # define fps
