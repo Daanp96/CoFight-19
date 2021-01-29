@@ -396,6 +396,8 @@ while photoTaken:
     # update explosion group
     explosion_group.update()
 
+    mouse = pygame.mouse.get_pos()
+
     # event handlers
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
