@@ -177,10 +177,5 @@ def startCam():
                         return isWearingMask, heart_color, photoTaken
                 break
 
-
-
-
-
         # show the output frame
         cv2.imshow("Character Selection", frame)
-startCam()
