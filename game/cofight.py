@@ -8,6 +8,9 @@ pygame.mixer.init()
 
 pygame.display.set_caption('CoFight-19')
 
+icon = pygame.image.load("img/mini_corona.png")
+pygame.display.set_icon(icon)
+
 music = 'music/title.mp3'
 
 pygame.mixer.music.load(music)
@@ -18,7 +21,8 @@ def start_the_game():
     pygame.display.quit()
     pygame.quit()
     os.system("game.py")
-    print("LETS GET IT")
+    print("[INFO] starting character selection...")
+
     pass
 
 
