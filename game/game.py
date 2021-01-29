@@ -207,9 +207,9 @@ class Alien_Bullets(pygame.sprite.Sprite):
     def update(self):
 
         if wearingMask:
-            self.rect.y += 2
+            self.rect.y += 3
         else:
-            self.rect.y += 20
+            self.rect.y += 100
 
         if self.rect.top > screen_height:
             self.kill()
@@ -277,9 +277,9 @@ def create_aliens():
 create_aliens()
 
 def drawControls():
-    draw_text('Use your arrow keys to move', font40, white, int(screen_width / 2 - 250), int(screen_height / 2 + 90))
-    draw_text('use Spacebar to fire!', font40, white, int(screen_width / 2 - 180), int(screen_height / 2 + 130))
-    draw_text(str(countdown), font40, white, int(screen_width / 2 - 12), screen_height - 125)
+    draw_text('Use your arrow keys to move', font40, white, screen_width / 2 - 250, screen_height / 2 + 90)
+    draw_text('Use Spacebar to fire!', font40, white, screen_width / 2 - 180, screen_height / 2 + 130)
+    draw_text(str(countdown), font40, white, screen_width / 2 - 12, screen_height - 125)
 
 # create player
 spaceship = Spaceship(int(screen_width / 2), screen_height - 100, 3)
@@ -354,17 +354,26 @@ while photoTaken:
             # game over / you win when wearing mask text
             if wearingMask:
                 if game_over == -1:
+                    pygame.draw.rect(screen, (0, 0, 0), [int(screen_width / 2 - 110), int(screen_height / 2 + 47), 260, 40])
                     draw_text('GAME OVER!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
                 if game_over == 1:
+                    pygame.draw.rect(screen, (0, 0, 0), [int(screen_width / 2 - 110), int(screen_height / 2 + 47), 215, 40])
                     draw_text('YOU WIN!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
 
             # game over / you win when NOT wearing mask text
             else:
                 if game_over == -1:
+                    pygame.draw.rect(screen, (0, 0, 0), [int(screen_width / 2 - 107), int(screen_height / 2 + 68), 280, 40])
                     draw_text('u have the rona', font40, white, int(screen_width / 2 - 100),
-                              int(screen_height / 2 + 50))
+                              int(screen_height / 2 + 70))
                 if game_over == 1:
-                    draw_text('hoe de fuck', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+                    # wij hebben hier echt teveel moeite voor gedaan
+                    draw_text('maat hoe dan, doe even niet, daar h', font40, white, 0, int(screen_height / 2 + 0))
+                    draw_text('eb je sterke genen ofzo, vind dit ech', font40, white, 0, int(screen_height / 2 + 35))
+                    draw_text('t niet kunnen, wij hebben zo ons b', font40, white, 0, int(screen_height / 2 + 65))
+                    draw_text('est gedaan dit zo moeilijk mogelijk ', font40, white, 0, int(screen_height / 2 + 95))
+                    draw_text('te maken, weet jij het een beetje te', font40, white, 0, int(screen_height / 2 + 125))
+                    draw_text('beaten, echt heel jammer dit.', font40, white, 0, int(screen_height / 2 + 155))
 
             # hover over quit button
             if screen_width - 200 <= mouse[0] <= screen_width - 60 and button_x <= mouse[1] <= button_x + 40:
@@ -382,11 +391,11 @@ while photoTaken:
                 pygame.draw.rect(screen, button_dark, [screen_width / 2 - 240, button_x, 140, 40])
 
             # text for buttons
-            screen.blit(quit_text, (screen_width - 200 + 35, button_x + 5))
-            screen.blit(retry_text, (screen_width/2 - 240 + 23, button_x + 5))
+            screen.blit(quit_text, (int(screen_width - 200 + 35), button_x + 5))
+            screen.blit(retry_text, (int(screen_width / 2 - 240 + 23), button_x + 5))
 
     if countdown > 0:
-        pygame.draw.rect(screen, (0, 0, 0), [(screen_width / 2 - 260), (screen_height / 2 + 85), 520, 90])
+        pygame.draw.rect(screen, (0, 0, 0), [int(screen_width / 2 - 260), int(screen_height / 2 + 85), 520, 90])
         drawControls()
         count_timer = pygame.time.get_ticks()
         if count_timer - last_count > 1000:
