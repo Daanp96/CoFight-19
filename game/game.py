@@ -3,7 +3,7 @@ from PIL import Image
 from pygame import mixer
 import random
 import numpy as np
-import detect_mask_video as dmv
+import IKPHBV.Buddy.game.detect_mask_video as dmv
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
 mixer.init()
@@ -13,7 +13,7 @@ music = 'music/game.mp3'
 
 pygame.mixer.music.load(music)
 pygame.mixer.music.set_volume(0.3)
-pygame.mixer.music.play()
+# pygame.mixer.music.play()
 
 # define fps
 clock = pygame.time.Clock()
@@ -28,6 +28,7 @@ pygame.display.set_caption('CoFight-19')
 # define fonts
 font30 = pygame.font.SysFont('Constantia', 30)
 font40 = pygame.font.SysFont('Constantia', 40)
+fontGame = pygame.font.SysFont('Bebas', 50)
 
 # load sounds
 explosion_fx = pygame.mixer.Sound("music/explosion.wav")
@@ -44,7 +45,7 @@ rows = 5
 cols = 5
 alien_cooldown = 1000  # bullet cooldown in milliseconds
 last_alien_shot = pygame.time.get_ticks()
-countdown = 3
+countdown = 5
 last_count = pygame.time.get_ticks()
 game_over = 0  # 0 is no game over, 1 means player has won, -1 means player has lost
 
@@ -260,6 +261,11 @@ def create_aliens():
 
 create_aliens()
 
+def drawControls():
+    draw_text('Use your arrow keys to move', font40, white, int(screen_width / 2 - 250), int(screen_height / 2 + 90))
+    draw_text('use Spacebar to fire!', font40, white, int(screen_width / 2 - 180), int(screen_height / 2 + 130))
+    draw_text(str(countdown), font40, white, int(screen_width / 2 - 12), screen_height - 125)
+
 # create player
 spaceship = Spaceship(int(screen_width / 2), screen_height - 100, 3)
 # hearts = Hearts(int(screen_width / 2), (screen_height - 100) + 55, 3)
@@ -299,6 +305,13 @@ while photoTaken:
     # draw background
     draw_bg()
 
+    # draw sprite groups
+    spaceship_group.draw(screen)
+    bullet_group.draw(screen)
+    alien_group.draw(screen)
+    alien_bullet_group.draw(screen)
+    explosion_group.draw(screen)
+
     if countdown == 0:
         # create random alien bullets
         # record current time
@@ -337,8 +350,8 @@ while photoTaken:
 
 
     if countdown > 0:
-        draw_text('GET READY!', font40, white, int(screen_width / 2 - 110), int(screen_height / 2 + 50))
-        draw_text(str(countdown), font40, white, int(screen_width / 2 - 10), int(screen_height / 2 + 100))
+        pygame.draw.rect(screen, (0, 0, 0), [(screen_width / 2 - 260), (screen_height / 2 + 85), 520, 90])
+        drawControls()
         count_timer = pygame.time.get_ticks()
         if count_timer - last_count > 1000:
             countdown -= 1
@@ -346,13 +359,6 @@ while photoTaken:
 
     # update explosion group
     explosion_group.update()
-
-    # draw sprite groups
-    spaceship_group.draw(screen)
-    bullet_group.draw(screen)
-    alien_group.draw(screen)
-    alien_bullet_group.draw(screen)
-    explosion_group.draw(screen)
 
     # event handlers
     for event in pygame.event.get():
