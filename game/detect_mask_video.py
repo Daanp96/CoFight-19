@@ -162,15 +162,25 @@ def startCam():
                     heart_color = (frame[pointY, pointX, 2], frame[pointY, pointX, 1], frame[pointY, pointX, 0])  # vervang met masker kleur
                     photoTaken = True
                     cv2.destroyAllWindows()
+                    return isWearingMask, heart_color, photoTaken
 
                 else:
-                    print('fuck u')
-                    isWearingMask = False
-                    heart_color = (16, 179, 70)  # hier een lekker corona kleurtje (:
-                    photoTaken = True
-                    cv2.destroyAllWindows()
+                    answer = input("Are you sure you want to continue without a mask? ")
+                    if answer == 'no':
+                        break
+                    else:
+                        print('fuck u')
+                        isWearingMask = False
+                        heart_color = (16, 179, 70)  # hier een lekker corona kleurtje (:
+                        photoTaken = True
+                        cv2.destroyAllWindows()
+                        return isWearingMask, heart_color, photoTaken
+                break
 
-                return isWearingMask, heart_color, photoTaken
+
+
+
 
         # show the output frame
         cv2.imshow("Character Selection", frame)
+startCam()
