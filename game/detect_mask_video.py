@@ -12,6 +12,8 @@ import imutils
 import time
 import cv2
 import os
+import tkinter
+from tkinter import messagebox
 
 
 def startCam():
@@ -103,6 +105,8 @@ def startCam():
     # initialize the video stream and allow the camera sensor to warm up
     print("[INFO] starting video stream...")
 
+    root = tkinter.Tk()
+    root.withdraw()
     vs = VideoStream(src=0).start()
     time.sleep(2.0)
 
@@ -113,9 +117,11 @@ def startCam():
         frame = vs.read()
         frame = imutils.resize(frame, width=400)
 
+
         # detect faces in the frame and determine if they are wearing a
         # face mask or not
         (locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
+
 
         # loop over the detected face locations and their corresponding
         # locations
@@ -161,21 +167,29 @@ def startCam():
                     isWearingMask = True
                     heart_color = (frame[pointY, pointX, 2], frame[pointY, pointX, 1], frame[pointY, pointX, 0])  # vervang met masker kleur
                     photoTaken = True
+                    vs.stop()
                     cv2.destroyAllWindows()
                     return isWearingMask, heart_color, photoTaken
 
                 else:
-                    answer = input("Are you sure you want to continue without a mask? ")
-                    if answer == 'no':
-                        break
-                    else:
+                    msgbox = messagebox.askquestion("Starting Game",
+                                                                "Are you sure you want to continue without a mask?",
+                                                                icon='warning')
+                    if msgbox == "yes":
+                        root.destroy()
                         print('fuck u')
                         isWearingMask = False
                         heart_color = (16, 179, 70)  # hier een lekker corona kleurtje (:
                         photoTaken = True
+                        vs.stop()
                         cv2.destroyAllWindows()
                         return isWearingMask, heart_color, photoTaken
+
+                    else:
+                        break
+
                 break
+
 
         # show the output frame
         cv2.imshow("Character Selection", frame)

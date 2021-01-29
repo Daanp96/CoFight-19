@@ -1,3 +1,5 @@
+import os
+
 import pygame
 from PIL import Image
 from pygame import mixer
@@ -11,6 +13,8 @@ pygame.init()
 
 music = 'music/game.mp3'
 
+mouse = pygame.mouse.get_pos()
+
 pygame.mixer.music.load(music)
 pygame.mixer.music.set_volume(0.3)
 pygame.mixer.music.play()
@@ -21,6 +25,14 @@ fps = 60
 
 screen_width = 600
 screen_height = 800
+
+# buttons
+button_color = (255, 255, 255)
+button_light = (170, 170, 170)
+button_dark = (100, 100, 100)
+button_font = pygame.font.SysFont('Corbel', 35)
+quit_text = button_font.render('quit', True, button_color)
+retry_text = button_font.render('retry', True, button_color)
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('CoFight-19')
@@ -286,11 +298,9 @@ im.save('img/heart_fixed.png')
 spaceship.heart = pygame.image.load("img/heart_fixed.png")
 spaceship.image = pygame.image.load("img/roi.png")
 
-
 if not wearingMask:
     alien_cooldown = -1  # bullet cooldown in milliseconds
     cols = 6
-
 
 while photoTaken:
 
@@ -330,11 +340,27 @@ while photoTaken:
                     draw_text('YOU WIN!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
             else:
                 if game_over == -1:
-                    draw_text('u have the rona', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+                    draw_text('u have the rona', font40, white, int(screen_width / 2 - 100),
+                              int(screen_height / 2 + 50))
                 if game_over == 1:
                     draw_text('hoe de fuck', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
 
+            if screen_width / 2 <= mouse[0] <= screen_width / 2 + 140 \
+                    and screen_height / 2 <= mouse[1] <= screen_height / 2 + 40:
+                pygame.draw.rect(screen, button_light, [screen_width / 2, screen_height / 2, 140, 40])
+                pygame.draw.rect(screen, button_dark, [screen_width / 2 - 280, screen_height / 2, 140, 40])
 
+            elif screen_width / 2 - 280 <= mouse[0] <= screen_width / 2 - 140 \
+                    and screen_height / 2 <= mouse[1] <= screen_height / 2 + 40:
+                pygame.draw.rect(screen, button_light, [screen_width / 2 - 280, screen_height / 2, 140, 40])
+                pygame.draw.rect(screen, button_dark, [screen_width / 2, screen_height / 2, 140, 40])
+
+            else:
+                pygame.draw.rect(screen, button_dark, [screen_width / 2, screen_height / 2, 140, 40])
+                pygame.draw.rect(screen, button_dark, [screen_width / 2 - 280, screen_height / 2, 140, 40])
+
+            screen.blit(quit_text, (screen_width / 2 + 50, screen_height / 2))
+            screen.blit(retry_text, (screen_width/2 + 50 - 280, screen_height/2))
 
     if countdown > 0:
         draw_text('GET READY!', font40, white, int(screen_width / 2 - 110), int(screen_height / 2 + 50))
@@ -359,6 +385,19 @@ while photoTaken:
         if event.type == pygame.QUIT:
             run = False
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if screen_width / 2 <= mouse[0] <= screen_width / 2 + 140 \
+                    and screen_height / 2 <= mouse[1] <= screen_height / 2 + 40:
+                pygame.display.quit()
+                pygame.quit()
+
+            if screen_width / 2 - 280 <= mouse[0] <= screen_width / 2 - 140 \
+                    and screen_height / 2 <= mouse[1] <= screen_height / 2 + 40:
+                pygame.display.quit()
+                pygame.quit()
+                os.system("cofight.py")
+
+    mouse = pygame.mouse.get_pos()
     pygame.display.update()
 
 pygame.quit()
