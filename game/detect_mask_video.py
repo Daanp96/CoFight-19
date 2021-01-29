@@ -2,18 +2,22 @@
 # python detect_mask_video.py
 
 # import the necessary packages
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.models import load_model
-from imutils.video import VideoStream
+
 import numpy as np
 import argparse
 import imutils
 import time
 import cv2
-import os
 import tkinter
 from tkinter import messagebox
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.models import load_model
+from imutils.video import VideoStream
 
 
 def startCam():
@@ -117,11 +121,9 @@ def startCam():
         frame = vs.read()
         frame = imutils.resize(frame, width=400)
 
-
         # detect faces in the frame and determine if they are wearing a
         # face mask or not
         (locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet)
-
 
         # loop over the detected face locations and their corresponding
         # locations
@@ -147,39 +149,42 @@ def startCam():
             # determine center of face (for mask color)
             pointX, pointY = (int(((startX + endX) / 2)), int(((startY + endY + 30) / 2)))
 
-            # save image when wearing a mask
+            # press space
             key = cv2.waitKey(1) & 0xFF
             if key == 32:
-                faceROI = frame[startY + 2:endY - 2, startX + 2:endX - 2]
 
+                # make capture of last frame
+                faceROI = frame[startY + 2:endY - 2, startX + 2:endX - 2]
                 height, width, depth = faceROI.shape
                 ratio = width / height
                 new_width = 70
                 new_height = int(new_width * ratio)
                 new_format = (new_height, new_width)
-
                 faceROI = cv2.cvtColor(faceROI, cv2.COLOR_RGB2RGBA)
                 faceROI = cv2.resize(faceROI, new_format)
 
                 cv2.imwrite('img/roi.png', faceROI)
 
+                # continue to game if wearing mask
                 if mask > withoutMask:
                     isWearingMask = True
-                    heart_color = (frame[pointY, pointX, 2], frame[pointY, pointX, 1], frame[pointY, pointX, 0])  # vervang met masker kleur
+                    heart_color = (frame[pointY, pointX, 2], frame[pointY, pointX, 1],
+                                   frame[pointY, pointX, 0])  # vervang met masker kleur
                     photoTaken = True
                     vs.stop()
                     cv2.destroyAllWindows()
                     return isWearingMask, heart_color, photoTaken
 
+                # prompt messagebox if not wearing mask
                 else:
                     msgbox = messagebox.askquestion("Starting Game",
-                                                                "Are you sure you want to continue without a mask?",
-                                                                icon='warning')
+                                                    "Are you sure you want to continue without a mask?",
+                                                    icon='warning')
                     if msgbox == "yes":
                         root.destroy()
                         print('fuck u')
                         isWearingMask = False
-                        heart_color = (16, 179, 70)  # hier een lekker corona kleurtje (:
+                        heart_color = (16, 179, 70)
                         photoTaken = True
                         vs.stop()
                         cv2.destroyAllWindows()
@@ -188,8 +193,5 @@ def startCam():
                     else:
                         break
 
-                break
-
-
         # show the output frame
-        cv2.imshow("Character Selection", frame)
+        cv2.imshow("Press SPACE to select character", frame)

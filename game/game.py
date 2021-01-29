@@ -1,5 +1,4 @@
 import os
-
 import pygame
 from PIL import Image
 from pygame import mixer
@@ -12,6 +11,9 @@ mixer.init()
 pygame.init()
 
 music = 'music/game.mp3'
+
+icon = pygame.image.load("img/mini_corona.png")
+pygame.display.set_icon(icon)
 
 mouse = pygame.mouse.get_pos()
 
@@ -27,12 +29,13 @@ screen_width = 600
 screen_height = 800
 
 # buttons
+button_x = 650
 button_color = (255, 255, 255)
 button_light = (170, 170, 170)
 button_dark = (100, 100, 100)
 button_font = pygame.font.SysFont('Corbel', 35)
-quit_text = button_font.render('quit', True, button_color)
-retry_text = button_font.render('retry', True, button_color)
+quit_text = button_font.render('QUIT', True, button_color)
+retry_text = button_font.render('RETRY', True, button_color)
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('CoFight-19')
@@ -274,30 +277,30 @@ create_aliens()
 
 # create player
 spaceship = Spaceship(int(screen_width / 2), screen_height - 100, 3)
-# hearts = Hearts(int(screen_width / 2), (screen_height - 100) + 55, 3)
 spaceship_group.add(spaceship)
 
+# detect mask video results
 result = dmv.startCam()
 wearingMask = result[0]
 heart_color = result[1]
 photoTaken = result[2]
 
+# make heart colour of mask video output
 im = Image.open('img/heart.png')
 data = np.array(im)
-
 r1, g1, b1 = 255, 255, 255  # Original value
 r2, g2, b2 = heart_color
-
 red, green, blue = data[:, :, 0], data[:, :, 1], data[:, :, 2]
 mask = (red == r1) & (green == g1) & (blue == b1)
 data[:, :, :3][mask] = [r2, g2, b2]
-
 im = Image.fromarray(data)
 im.save('img/heart_fixed.png')
 
+# set new images
 spaceship.heart = pygame.image.load("img/heart_fixed.png")
 spaceship.image = pygame.image.load("img/roi.png")
 
+# more enemies if not wearing mask
 if not wearingMask:
     alien_cooldown = -1  # bullet cooldown in milliseconds
     cols = 6
@@ -332,12 +335,17 @@ while photoTaken:
             bullet_group.update()
             alien_group.update()
             alien_bullet_group.update()
+
         else:
+
+            # game over / you win when wearing mask text
             if wearingMask:
                 if game_over == -1:
                     draw_text('GAME OVER!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
                 if game_over == 1:
                     draw_text('YOU WIN!', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
+
+            # game over / you win when NOT wearing mask text
             else:
                 if game_over == -1:
                     draw_text('u have the rona', font40, white, int(screen_width / 2 - 100),
@@ -345,22 +353,24 @@ while photoTaken:
                 if game_over == 1:
                     draw_text('hoe de fuck', font40, white, int(screen_width / 2 - 100), int(screen_height / 2 + 50))
 
-            if screen_width / 2 <= mouse[0] <= screen_width / 2 + 140 \
-                    and screen_height / 2 <= mouse[1] <= screen_height / 2 + 40:
-                pygame.draw.rect(screen, button_light, [screen_width / 2, screen_height / 2, 140, 40])
-                pygame.draw.rect(screen, button_dark, [screen_width / 2 - 280, screen_height / 2, 140, 40])
+            # hover over quit button
+            if screen_width - 200 <= mouse[0] <= screen_width - 60 and button_x <= mouse[1] <= button_x + 40:
+                pygame.draw.rect(screen, button_light, [screen_width - 200, button_x, 140, 40])
+                pygame.draw.rect(screen, button_dark, [screen_width / 2 - 240, button_x, 140, 40])
 
-            elif screen_width / 2 - 280 <= mouse[0] <= screen_width / 2 - 140 \
-                    and screen_height / 2 <= mouse[1] <= screen_height / 2 + 40:
-                pygame.draw.rect(screen, button_light, [screen_width / 2 - 280, screen_height / 2, 140, 40])
-                pygame.draw.rect(screen, button_dark, [screen_width / 2, screen_height / 2, 140, 40])
+            # hover over retry button
+            elif screen_width / 2 - 240 <= mouse[0] <= screen_width / 2 - 100 and button_x <= mouse[1] <= button_x + 40:
+                pygame.draw.rect(screen, button_dark, [screen_width - 200, button_x, 140, 40])
+                pygame.draw.rect(screen, button_light, [screen_width / 2 - 240, button_x, 140, 40])
 
+            # default buttons
             else:
-                pygame.draw.rect(screen, button_dark, [screen_width / 2, screen_height / 2, 140, 40])
-                pygame.draw.rect(screen, button_dark, [screen_width / 2 - 280, screen_height / 2, 140, 40])
+                pygame.draw.rect(screen, button_dark, [screen_width - 200, button_x, 140, 40])
+                pygame.draw.rect(screen, button_dark, [screen_width / 2 - 240, button_x, 140, 40])
 
-            screen.blit(quit_text, (screen_width / 2 + 50, screen_height / 2))
-            screen.blit(retry_text, (screen_width/2 + 50 - 280, screen_height/2))
+            # text for buttons
+            screen.blit(quit_text, (screen_width - 200 + 35, button_x + 5))
+            screen.blit(retry_text, (screen_width/2 - 240 + 23, button_x + 5))
 
     if countdown > 0:
         draw_text('GET READY!', font40, white, int(screen_width / 2 - 110), int(screen_height / 2 + 50))
@@ -380,24 +390,25 @@ while photoTaken:
     alien_bullet_group.draw(screen)
     explosion_group.draw(screen)
 
+    mouse = pygame.mouse.get_pos()
+
     # event handlers
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            pygame.display.quit()
+            pygame.quit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if screen_width / 2 <= mouse[0] <= screen_width / 2 + 140 \
-                    and screen_height / 2 <= mouse[1] <= screen_height / 2 + 40:
+            # mouse event for quit
+            if screen_width - 200 <= mouse[0] <= screen_width - 60 and button_x <= mouse[1] <= button_x + 40:
                 pygame.display.quit()
                 pygame.quit()
-
-            if screen_width / 2 - 280 <= mouse[0] <= screen_width / 2 - 140 \
-                    and screen_height / 2 <= mouse[1] <= screen_height / 2 + 40:
+            # mouse event for retry
+            if screen_width / 2 - 240 <= mouse[0] <= screen_width / 2 - 100 and button_x <= mouse[1] <= button_x + 40:
                 pygame.display.quit()
                 pygame.quit()
                 os.system("cofight.py")
 
-    mouse = pygame.mouse.get_pos()
     pygame.display.update()
 
-pygame.quit()
+
