@@ -182,7 +182,6 @@ def startCam():
                                                     icon='warning')
                     if msgbox == "yes":
                         root.destroy()
-                        print('fuck u')
                         isWearingMask = False
                         heart_color = (16, 179, 70)
                         photoTaken = True
